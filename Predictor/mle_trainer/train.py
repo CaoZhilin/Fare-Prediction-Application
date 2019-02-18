@@ -67,10 +67,6 @@ def direction(origin, destination):
 
 def process_train_data(raw_df):
     """
-    TODO: Implement this method.
-    
-    You may drop rows if needed.
-
     :param raw_df: the DataFrame of the raw training data
     :return:  a DataFrame with the predictors created
     """
