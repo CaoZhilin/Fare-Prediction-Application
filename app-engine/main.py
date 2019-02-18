@@ -11,6 +11,8 @@ from clients.natural_language import NaturalLanguageClient
 from clients.google_maps import GoogleMapsClient
 from clients.text_to_speech import TextToSpeechClient
 from clients.speech_to_text import SpeechToTextClient
+from google.cloud import automl_v1beta1 as automl
+from clients.cloud_vision import CloudVisionClient
 import base64
 import datetime
 
@@ -19,12 +21,19 @@ app = Flask(__name__)
 project_id = os.getenv("GOOGLE_CLOUD_PROJECT")
 mle_model_name = os.getenv("GCP_MLE_MODEL_NAME")
 mle_model_version = os.getenv("GCP_MLE_MODEL_VERSION")
+compute_region = os.getenv("COMPUTE_REGION")
+model_id = os.getenv("AUTOML_MODEL_ID")
+score_threshold = '0.5'
 
 ml_engine_client = MLEngineClient(project_id, mle_model_name, mle_model_version)
 google_map_client = GoogleMapsClient()
 nl_client = NaturalLanguageClient()
 tts_client = TextToSpeechClient()
 stt_client = SpeechToTextClient()
+automl_client = automl.AutoMlClient()
+cv_client = CloudVisionClient()
+model_full_id = automl_client.model_path(project_id, compute_region, model_id)
+prediction_client = automl.PredictionServiceClient()
 
 def haversine_distance(origin, destination):
     lat1, lon1 = origin
@@ -81,9 +90,11 @@ def process_test_data(raw_df):
     raw_df['hour'] = raw_df.apply(lambda row: row.pickup_datetime.hour, axis=1)
     raw_df['day'] = raw_df.apply(lambda row: row.pickup_datetime.weekday(), axis=1)
 
+    # get the distance from location to jfk airport
     raw_df['drop_jfk_dist'] = raw_df.apply(lambda row: jfk_dist((row.dropoff_latitude, row.dropoff_longitude)), axis=1)
     raw_df['pick_jfk_dist'] = raw_df.apply(lambda row: jfk_dist((row.pickup_latitude, row.pickup_longitude)), axis=1)
     
+    # get manhatten distance
     raw_df['manhat_dist'] = raw_df.apply(lambda row: manhat_dist((row.pickup_latitude, row.pickup_longitude), (row.dropoff_latitude, row.dropoff_longitude)), axis=1)
 
     raw_df['abs_lat'] = raw_df.apply(lambda row: abs(row.pickup_latitude - row.dropoff_latitude), axis=1)
@@ -118,10 +129,12 @@ def fare_prediction():
         
     print(res_entities)
     
+    # get the direction of two location
     directions = google_map_client.directions(res_entities[0], res_entities[1])
     start_location = directions[0]['legs'][0]['start_location']
     end_location = directions[0]['legs'][0]['end_location']
     
+    # build predicted dataframe
     data = [{'pickup_datetime': datetime.datetime.now(),
              'pickup_latitude': start_location['lat'],
              'pickup_longitude': start_location['lng'],
@@ -166,7 +179,69 @@ def text_to_speech():
 
 @app.route('/farePredictionVision', methods=['POST'])
 def fare_prediction_vision():
-    pass
+    label_mapping = {"jing_fong": "Jing Fong",
+                 "bamonte": "Bamonte",
+                 "katz_deli": "Katz's Delicatessen",
+                 "acme": "ACME"}
+    params = {}
+    if score_threshold:
+        params = {"score_threshold": score_threshold}
+        
+    sou_img = base64.b64decode(request.form["source"])
+    des_img = base64.b64decode(request.form["destination"])
+    source_landmark = cv_client.get_landmarks(sou_img)
+    destination_landmark = cv_client.get_landmarks(des_img)
+    
+    # check whether cloud vision has recognize the image, if not, use AutoML model
+    if source_landmark is None:
+        sou_payload = {"image": {"image_bytes": sou_img}}
+        response = prediction_client.predict(model_full_id, sou_payload, params)
+        for result in response.payload:
+            source = label_mapping[result.display_name]
+    else:
+        source = source_landmark.description
+        print(source)
+            
+    if destination_landmark is None:
+        des_payload = {"image": {"image_bytes": des_img}}
+        response = prediction_client.predict(model_full_id, des_payload, params)
+        for result in response.payload:
+            destination = label_mapping[result.display_name]
+    else:
+        destination = destination_landmark.description
+        print(destination)
+        
+    directions = google_map_client.directions(source, destination)
+    
+    #get location latitude and longitude
+    start_location = directions[0]['legs'][0]['start_location']
+    print(start_location)
+    end_location = directions[0]['legs'][0]['end_location']
+    print(end_location)
+    
+    #build predicted dataframe
+    data = [{'pickup_datetime': datetime.datetime(2018, 11, 17, 10, 13, 20),
+             'pickup_latitude': start_location['lat'],
+             'pickup_longitude': start_location['lng'],
+             'dropoff_latitude': end_location['lat'],
+             'dropoff_longitude': end_location['lng'],
+             'passenger_count': 1
+            }]
+    
+    raw_data_df = pd.DataFrame(data)
+    predictors_df = process_test_data(raw_data_df)
+    fare = ml_engine_client.predict(predictors_df.values.tolist())
+    
+    text = "Your expected fare from " + source + " to " + destination + " is ${:0.2f}".format(fare[0])
+    audio_content = tts_client.synthesize_speech(text)
+    res = {}
+
+    res['entities'] = [source, destination]
+    res['text'] = text
+    res['speech'] = str(base64.b64encode(audio_content).decode("utf-8"))
+
+    res['predicted_fare'] = "{:0.2f}".format(fare[0])
+    return json.dumps(res)
 
 
 @app.route('/namedEntities', methods=['GET'])

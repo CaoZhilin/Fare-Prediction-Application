@@ -24,3 +24,17 @@ text = {
 print(requests.get('{}/textToSpeech'.format(endpoint), params=text).json())
 print(requests.get('{}/namedEntities'.format(endpoint), params=entity).json())
 print(requests.get('{}/directions'.format(endpoint), params=direction).json())
+
+print("======TEST farePredictionVision======")
+ORI_PATH = "/home/clouduser/ProjectMachineLearning/vision_dataset/acme_27.jpg"
+DEST_PATH = "/home/clouduser/ProjectMachineLearning/vision_dataset/jing_fong_7.jpg"
+
+with open(ORI_PATH, 'rb') as ff:
+    ori_data = ff.read()
+with open(DEST_PATH, 'rb') as ff:
+    dest_data = ff.read()
+
+ori_data = str(base64.b64encode(ori_data).decode("utf-8"))
+dest_data = str(base64.b64encode(dest_data).decode("utf-8"))
+data = {'source': ori_data, 'destination': dest_data}
+print(requests.post('{}/farePredictionVision'.format(endpoint), data=data).text)
