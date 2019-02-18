@@ -1,0 +1,24 @@
+trainingInput:
+  scaleTier: STANDARD_1
+  hyperparameters:
+    hyperparameterMetricTag: nyc_fare
+    goal: MINIMIZE
+    maxTrials: 20
+    maxParallelTrials: 8
+    enableTrialEarlyStopping: TRUE
+    params:
+    - parameterName: max_depth
+      type: INTEGER
+      minValue: 4
+      maxValue: 8
+    - parameterName: min_child_weight
+      type: INTEGER
+      minValue: 1
+      maxValue: 3
+    - parameterName: eta
+      type: DISCRETE
+      discreteValues: [0.1, 0.2, 0.3, 0.4, 0.5]
+    - parameterName: subsample
+      type: DISCRETE
+      discreteValues: [0.8, 0.9, 1.0]
+    

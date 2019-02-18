@@ -1,0 +1,327 @@
+{
+  "createTime": "2018-11-18T05:00:25Z",
+  "endTime": "2018-11-18T06:21:28Z",
+  "etag": "KySTo75nDR8=",
+  "jobId": "test_job_1118_0500",
+  "startTime": "2018-11-18T05:00:30Z",
+  "state": "SUCCEEDED",
+  "trainingInput": {
+    "hyperparameters": {
+      "enableTrialEarlyStopping": true,
+      "goal": "MINIMIZE",
+      "hyperparameterMetricTag": "nyc_fare",
+      "maxParallelTrials": 8,
+      "maxTrials": 20,
+      "params": [
+        {
+          "maxValue": 8.0,
+          "minValue": 4.0,
+          "parameterName": "max_depth",
+          "type": "INTEGER"
+        },
+        {
+          "maxValue": 3.0,
+          "minValue": 1.0,
+          "parameterName": "min_child_weight",
+          "type": "INTEGER"
+        },
+        {
+          "discreteValues": [
+            0.1,
+            0.2,
+            0.3,
+            0.4,
+            0.5
+          ],
+          "parameterName": "eta",
+          "type": "DISCRETE"
+        },
+        {
+          "discreteValues": [
+            0.8,
+            0.9,
+            1.0
+          ],
+          "parameterName": "subsample",
+          "type": "DISCRETE"
+        }
+      ]
+    },
+    "jobDir": "gs://ml-fare-prediction-gs/",
+    "packageUris": [
+      "gs://ml-fare-prediction-gs/packages/91e41d250ee56772a8a1ea7229307b42a1d131bea6c26dbcb4e6c8cce5335aff/mle_trainer-0.1.tar.gz"
+    ],
+    "pythonModule": "mle_trainer.train",
+    "pythonVersion": "3.5",
+    "region": "us-east1",
+    "runtimeVersion": "1.10",
+    "scaleTier": "STANDARD_1"
+  },
+  "trainingOutput": {
+    "completedTrialCount": "20",
+    "consumedMLUnits": 44.55,
+    "isHyperparameterTuningJob": true,
+    "trials": [
+      {
+        "finalMetric": {
+          "objectiveValue": 3.098507319216328,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.4",
+          "max_depth": "8",
+          "min_child_weight": "3",
+          "subsample": "1"
+        },
+        "trialId": "12"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 3.1029519926515645,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.5",
+          "max_depth": "8",
+          "min_child_weight": "3",
+          "subsample": "0.9"
+        },
+        "trialId": "7"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 3.1079696469703992,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.5",
+          "max_depth": "8",
+          "min_child_weight": "3",
+          "subsample": "1"
+        },
+        "trialId": "13"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 3.1270925731341332,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.5",
+          "max_depth": "8",
+          "min_child_weight": "2",
+          "subsample": "0.9"
+        },
+        "trialId": "14"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 3.1357820306677464,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.4",
+          "max_depth": "8",
+          "min_child_weight": "3",
+          "subsample": "1"
+        },
+        "trialId": "18"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 3.143540427356048,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.5",
+          "max_depth": "8",
+          "min_child_weight": "3",
+          "subsample": "1"
+        },
+        "trialId": "20"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 3.147681974773686,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.5",
+          "max_depth": "8",
+          "min_child_weight": "3",
+          "subsample": "0.9"
+        },
+        "trialId": "15"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 3.1487466440015424,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.4",
+          "max_depth": "8",
+          "min_child_weight": "3",
+          "subsample": "0.8"
+        },
+        "trialId": "17"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 3.1576426645102313,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.5",
+          "max_depth": "8",
+          "min_child_weight": "3",
+          "subsample": "1"
+        },
+        "trialId": "5"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 3.184170228110266,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.5",
+          "max_depth": "6",
+          "min_child_weight": "3",
+          "subsample": "0.8"
+        },
+        "trialId": "19"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 3.18670919792533,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.5",
+          "max_depth": "8",
+          "min_child_weight": "3",
+          "subsample": "0.8"
+        },
+        "trialId": "4"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 3.1987538414218903,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.5",
+          "max_depth": "6",
+          "min_child_weight": "3",
+          "subsample": "0.8"
+        },
+        "trialId": "1"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 3.220706533668382,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.5",
+          "max_depth": "5",
+          "min_child_weight": "3",
+          "subsample": "1"
+        },
+        "trialId": "10"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 3.364002089468617,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.4",
+          "max_depth": "4",
+          "min_child_weight": "2",
+          "subsample": "0.8"
+        },
+        "trialId": "11"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 3.3760173721366464,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.3",
+          "max_depth": "5",
+          "min_child_weight": "2",
+          "subsample": "0.9"
+        },
+        "trialId": "2"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 3.848099681091169,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.2",
+          "max_depth": "4",
+          "min_child_weight": "1",
+          "subsample": "0.8"
+        },
+        "trialId": "16"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 5.888727161364219,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.1",
+          "max_depth": "8",
+          "min_child_weight": "1",
+          "subsample": "1"
+        },
+        "trialId": "3"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 5.8903631808337655,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.1",
+          "max_depth": "8",
+          "min_child_weight": "3",
+          "subsample": "0.8"
+        },
+        "trialId": "6"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 5.891313235931392,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.1",
+          "max_depth": "8",
+          "min_child_weight": "1",
+          "subsample": "1"
+        },
+        "trialId": "9"
+      },
+      {
+        "finalMetric": {
+          "objectiveValue": 5.9481708592735,
+          "trainingStep": "1"
+        },
+        "hyperparameters": {
+          "eta": "0.1",
+          "max_depth": "8",
+          "min_child_weight": "3",
+          "subsample": "1"
+        },
+        "trialId": "8"
+      }
+    ]
+  }
+}
